@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wait Page</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #000000, #000000);
+            font-family: 'VT323', monospace;
+            color: #ffffff;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            background-color: #4a4949;
+            color: #ffffff;
+            border: none;
+            border-radius: 7.5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 27px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .button:active {
+            background-color: #6b6b6b;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div class="button-container">
+    <a href="https://t.me/+_iwOXjaESvQzMTk0">
+        <button class="button">RUZZIA</button>
+    </a>
+
+    <a href={{ passport_url }}>
+        <button class="button">My PaZZport</button>
+    </a>
+</div>
+
+</body>
+</html>

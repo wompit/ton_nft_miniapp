@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minting NFT</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #000000, #000000);
+            font-family: 'VT323', monospace;
+            color: #ffffff;
+        }
+
+        .loader {
+            border: 16px solid #acacac;
+            border-radius: 50%;
+            border-top: 16px solid #727273;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #363636;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="loader"></div>
+<div class="text">Minting NFT</div>
+
+
+<script>
+    function checkNFT() {
+        Telegram.WebApp.ready();
+
+        $.ajax({
+            url: '/check_nft',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(Telegram.WebApp.initDataUnsafe.user),
+            success: function (response) {
+                console.log('Response:', response);
+                if (response['success']) {
+                    window.location.href = "https://t.me/+_iwOXjaESvQzMTk0";
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    setInterval(checkNFT, 5000);
+</script>
+</body>
+</html>

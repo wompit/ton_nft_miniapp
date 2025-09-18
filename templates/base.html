@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #000000, #000000);
+        }
+
+        .tonkeeper-button {
+            background: none;
+            border: none;
+            padding: 10px 20px 10px 70px;
+            font-size: 27px;
+            height: 300px;
+            width: 300px;
+        }
+    </style>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<button class="tonkeeper-button" id="ton-connect"></button>
+<script type="text/javascript">
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://ruzzia.app/static/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect',
+        items: [
+            {"name": "ton_addr"},
+            {"name": "ton_proof", "payload": "rand"}
+        ],
+        uiPreferences: {
+            borderRadius: 's',
+            theme: 'DARK',
+            colorsSet: {
+                ["DARK"]: {
+                    connectButton: {
+                        primary: '#2D2D37',
+                        background: '#2D2D37'
+                    }
+                },
+                ["THEME.LIGHT"]: {
+                    text: {
+                        primary: '#2D2D37',
+                        background: '#2D2D37'
+                    }
+                }
+            }
+        }
+    });
+
+    tonConnectUI.setConnectRequestParameters({
+        state: "ready",
+        value: {
+            tonProof: 'rand'
+        }
+    });
+
+    tonConnectUI.onStatusChange(wallet => {
+        if (wallet && wallet.connectItems?.tonProof && 'proof' in wallet.connectItems.tonProof) {
+            checkProofInYourBackend(wallet.connectItems.tonProof.proof, wallet.account);
+        }
+    });
+
+    tonConnectUI.uiOptions = {
+        twaReturnUrl: 'https://t.me/ruzzia_app_bot'
+    };
+
+    async function connectToWallet() {
+        try {
+            const connectedWallet = await tonConnectUI.connectWallet();
+            console.log("Connected account - ", connectedWallet);
+            let account = connectedWallet.account;
+
+            Telegram.WebApp.ready();
+            account['user_data'] = Telegram.WebApp.initDataUnsafe.user;
+
+            localStorage.setItem('connectedWallet', JSON.stringify(account)); // Save to localStorage
+
+            $.ajax({
+                url: '/connect_wallet',
+                type: 'post',
+                dataType: 'json',
+                data: account,
+                success: function (json) {
+                    if (json['success']) {
+                        window.location.replace(json['data']['url']);
+                    }
+                },
+                error: function (json) {
+                    window.location.replace("/buy_page");
+                }
+            });
+        } catch (error) {
+            console.error("Error connecting to wallet: ", error);
+            // Handle the error appropriately here
+        }
+    }
+
+    function checkProofInYourBackend(proof, wallet) {
+        // SEND PROOF AND WALLET
+        console.log('CheckProof - ', proof, wallet);
+    }
+
+    connectToWallet();
+</script>
+</body>
+</html>

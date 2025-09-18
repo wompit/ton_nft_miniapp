@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Pazzport</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #000000, #000000);
+            margin: 0;
+        }
+
+        .container {
+            position: relative;
+            width: 768px;
+            height: 804px;
+        }
+
+        .container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .tonconnect-button {
+            position: absolute;
+            top: -35px;
+            right: 27px;
+            z-index: 1000;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .tonconnect-button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            position: absolute;
+            top: 135px;
+            left: 25px;
+            width: 520px;
+            border-collapse: collapse;
+        }
+
+        td {
+            border: none;
+            padding: 39px;
+            vertical-align: middle;
+        }
+
+        .form-group input {
+            border: none;
+            background-color: #d3d3d3;
+            font-size: 20px;
+            color: black;
+            text-align: left;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .form-group input::placeholder {
+            color: black;
+        }
+
+        .submit-button {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2D2D37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 200px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .photo-input {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            width: 100px;
+            text-align: center;
+        }
+
+        .photo-preview {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            display: none;
+        }
+
+        label {
+            font-size: 20px;
+            color: #2D2D37;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                height: auto;
+                padding: 10px;
+            }
+
+            .container img {
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+                aspect-ratio: 1 / 1;
+            }
+
+            .photo-input {
+                top: 11%;
+                left: 77%;
+                transform: translateX(-50%);
+            }
+
+            .photo-input label {
+                display: inline-block;
+                background-color: #cccccc;
+                color: black;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .photo-input input[type="file"] {
+                display: none;
+            }
+
+            table {
+                position: absolute;
+                top: 40%;
+                left: 5%;
+                width: 95%;
+                max-width: 270px;
+                margin-top: 0;
+                box-sizing: border-box;
+            }
+
+            td {
+                border: none;
+                padding: 3px;
+                vertical-align: middle;
+                box-sizing: border-box;
+            }
+
+            td:first-child {
+                padding-right: 10px;
+            }
+
+            td:last-child {
+                padding-left: 5px;
+            }
+
+            input[type="text"],
+            input[type="date"] {
+                width: 100%;
+                padding: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                outline: none;
+                transition: background-color 0.3s ease;
+                box-sizing: border-box;
+            }
+
+            input[type="text"]:focus,
+            input[type="date"]:focus {
+                background: rgba(255, 255, 255, 1);
+            }
+
+            label {
+                font-family: Arial, sans-serif;
+                font-weight: bold;
+                font-size: 10px;
+                color: #000;
+                display: block;
+                margin-bottom: 5px;
+                box-sizing: border-box;
+            }
+
+            .submit-button {
+                position: absolute;
+                top: 99%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #2D2D37;
+                z-index: 1000;
+                color: white;
+                border: none;
+                padding: 15px 10px;
+                cursor: pointer;
+                width: 80%;
+                max-width: 250px;
+                border-radius: 5px;
+                text-align: center;
+                line-height: 4px;
+                box-sizing: border-box;
+                display: inline-block;
+                touch-action: manipulation;
+                pointer-events: auto;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            .tonkeeper-button {
+                position: absolute;
+                top: 106%;
+                left: 28%;
+                background: none;
+                border: none;
+                z-index: 1000;
+            }
+        }
+    </style>
+
+    <style>
+{#        {% if mode == "default" %}#}
+{#            body {#}
+{#                background: linear-gradient(135deg, #d1d0d0, #707070);#}
+{#            }#}
+{#        {% elif mode == "dark" %}#}
+{#            body {#}
+{#                background: linear-gradient(135deg, #9c9a9a, #42464F);#}
+{#            }#}
+{#        {% else %}#}
+{#            body {#}
+{#                background: linear-gradient(135deg, rgba(207, 75, 75, 0.5), #770b02);#}
+{#            }#}
+{#        {% endif %}#}
+    </style>
+
+</head>
+<body>
+<div hidden id="user_mnemo">{{ telegram_id }}</div>
+<div class="container">
+    <button class="tonkeeper-button" id="ton-connect"></button>
+    {% if mode == "default" %}
+        <img src="{{ url_for('static', filename='images/light.png') }}" alt="Passport Template">
+    {% elif mode == "dark" %}
+        <img src="{{ url_for('static', filename='images/dark.png') }}" alt="Passport Template">
+    {% else %}
+        <img src="{{ url_for('static', filename='images/zpecial.png') }}" alt="Passport Template">
+    {% endif %}
+    <form enctype="multipart/form-data" method="post">
+        <table>
+            <tr>
+                <td colspan="2">
+                    <label>Name</label>
+                    <input type="text" name="name" placeholder="Name" maxlength="30" required>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Date of birth</label>
+                    <input type="date" name="date_of_birth" placeholder="Date of Birth" required>
+                </td>
+                <td>
+                    <label>Race</label>
+                    <input type="text" name="race" placeholder="Race" maxlength="10" required>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Planet</label>
+                    <input type="text" name="planet" placeholder="Planet" maxlength="10" required>
+                </td>
+                <td>
+                    <label>Sex</label>
+                    <input type="text" name="sex" placeholder="Sex" maxlength="10" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label>Position</label>
+                    <input type="text" name="position" placeholder="Position" maxlength="30" required>
+                </td>
+            </tr>
+        </table>
+        <div class="photo-input">
+            <label for="photo">Choose photo</label>
+            <input type="file" id="photo" name="photo" onchange="validateFileSize(this)" required>
+            <img id="photo-preview" class="photo-preview" alt="Photo Preview">
+        </div>
+        {% if mode == "default" %}
+            <input type="submit" class="submit-button" value="Pay 999 Zooble" id="submit">
+        {% else %}
+            <input type="submit" class="submit-button" value="Mint NFT" id="submit">
+        {% endif %}
+        <button class="tonkeeper-button" id="ton-connect" hidden></button>
+    </form>
+</div>
+<script type="text/javascript">
+    function validateFileSize(fileInput) {
+            const file = fileInput.files[0];
+            if (file.size > 10485760) {
+                alert("Photo must be less 10MB");
+                fileInput.value = '';
+            }
+        }
+
+
+
+    $(document).ready(async function () {
+
+        $('input[type="submit"]').attr('disabled', false);
+
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://ruzzia.app/static/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect',
+            items: [
+                {"name": "ton_addr"},
+                {"name": "ton_proof", "payload": "rand"}
+            ],
+            uiPreferences: {
+                borderRadius: 's',
+                theme: 'DARK',
+                colorsSet: {
+                    ["DARK"]: {
+                        connectButton: {
+                            primary: '#2D2D37',
+                            background: '#2D2D37'
+                        }
+                    },
+                    ["THEME.LIGHT"]: {
+                        text: {
+                            primary: '#2D2D37',
+                            background: '#2D2D37'
+                        }
+                    }
+                }
+            }
+        });
+
+        tonConnectUI.uiOptions = {
+            twaReturnUrl: 'https://t.me/ruzzia_app_bot'
+        };
+
+        let walletAccount = localStorage.getItem('connectedWallet');
+
+        if (walletAccount) {
+            walletAccount = JSON.parse(walletAccount);
+            console.log("Wallet already connected: ", walletAccount);
+            TON_CONNECT_UI.account = walletAccount;
+        } else {
+            const connectedWallet = await tonConnectUI.connectWallet()
+            walletAccount = connectedWallet.account;
+            localStorage.setItem('connectedWallet', JSON.stringify(walletAccount));
+        }
+        const connectedWallet = await tonConnectUI.connectWallet()
+        walletAccount = connectedWallet.account;
+
+        // Display uploaded photo
+        $('#photo').on('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#photo-preview').attr('src', e.target.result).show();
+                    $('label[for="photo"]').hide();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $('form').submit(async function (event) {
+            console.log('Form Submitted');
+            event.preventDefault();
+            await process(this);
+        });
+
+        $('submit').on('click touchstart', function () {
+            console.log('Button clicked');
+            this.form.submit();
+        });
+
+        $(document).on('click', function (e) {
+            if (!$(e.target).is('input')) {
+                $('input').blur();
+            }
+        });
+
+        async function process(form) {
+            Telegram.WebApp.ready();
+
+            let formData = new FormData(form);
+            formData.append('user_data', JSON.stringify(Telegram.WebApp.initDataUnsafe.user));
+            formData.append('account', JSON.stringify(walletAccount));
+
+            $('input[type="submit"]').attr('disabled', true);
+
+            const formatDate = (date) => {
+                const d = new Date(date);
+                let month = '' + (d.getMonth() + 1);
+                let day = '' + d.getDate();
+                const year = d.getFullYear();
+
+                if (month.length < 2) month = '0' + month;
+                if (day.length < 2) day = '0' + day;
+
+                return [day, month, year].join('.');
+            };
+
+            formData.set('date_of_birth', formatDate($('input[name="date_of_birth"]').val()));
+
+            {#alert('Form data processed');#}
+
+            $.ajax({
+                url: "/submit",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: async function (data) {
+                    let jetton_payload = data['data'];
+                    console.log('Jetton payload: ', jetton_payload)
+                    if (jetton_payload) {
+                        if ('mode' in jetton_payload) {
+                            window.location.replace('/mint_nft');
+                            return;
+                        }
+
+                        const transaction = {
+                            validUntil: Math.floor(Date.now() / 1000) + 360,
+                            messages: [{
+                                address: jetton_payload['jetton_address'],
+                                amount: "50000000",
+                                payload: jetton_payload['payload']
+                            }]
+                        };
+                        try {
+                            const result = await tonConnectUI.sendTransaction(transaction, {
+                                modals: ['before', 'success', 'error'],
+                                notifications: ['before', 'success', 'error'],
+                                skipRedirectToWallet: 'ios'
+                            });
+                            console.log('Result transaction', result);
+
+                            let data = {
+                                'boc': result,
+                            };
+                            data['user_data'] = JSON.stringify(Telegram.WebApp.initDataUnsafe.user);
+
+                            $.ajax({
+                                url: '/save_transaction',
+                                type: 'post',
+                                dataType: 'json',
+                                data: data,
+                                success: function (json) {
+                                    if (json['success']) {
+                                        window.location.replace(json['data']['url']);
+                                    }
+                                },
+                                error: function (json) {
+                                    window.location.replace('/buy_page');
+                                }
+                            });
+                        } catch (error) {
+                            {#alert('Transaction sending alert');#}
+                            console.log('Transaction sending error:', error);
+                        }
+                    } else {
+                        alert('Transaction creation failed. Please try again later');
+                    }
+                },
+                error: function (error) {
+                    {#alert('Ajax alert');#}
+                    {#alert(JSON.stringify(error));#}
+                    console.log('Ajax error:', error);
+                }
+            });
+
+            $('input[type="submit"]').removeAttr('disabled');
+        }
+    });
+</script>
+</body>
+</html>

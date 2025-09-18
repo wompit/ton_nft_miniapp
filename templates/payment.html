@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Complete your payment</h1>
+    <p>Please complete your payment of 10 Zooble using the link below:</p>
+    <a href="{{ payment_link }}" target="_blank">Pay with Tonkeeper</a>
+    <form action="{{ url_for('main.confirm_payment') }}" method="post">
+        <label for="transaction_id">Transaction ID:</label>
+        <input type="text" id="transaction_id" name="transaction_id" required><br>
+        <button type="submit">Confirm Payment</button>
+    </form>
+</body>
+</html>

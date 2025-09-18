@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wait Page</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #000000, #000000);
+            font-family: 'VT323', monospace;
+            color: #ffffff;
+        }
+
+        .loader {
+            border: 16px solid rgb(170, 169, 169);
+            border-radius: 50%;
+            border-top: 16px solid #4a4949;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #272424;
+        }
+
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="loader"></div>
+<div class="text">Waiting for payment</div>
+
+<script>
+    function checkPayment() {
+        Telegram.WebApp.ready();
+
+        $.ajax({
+            url: '/check_payment',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(Telegram.WebApp.initDataUnsafe.user),
+            success: function (response) {
+                console.log('Response:', response);
+                if (response['success']) {
+                    window.location.replace(response['data']);
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    setInterval(checkPayment, 5000);
+</script>
+</body>
+</html>

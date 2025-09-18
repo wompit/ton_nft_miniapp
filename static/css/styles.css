@@ -1,0 +1,157 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black;
+    margin: 0;
+}
+
+.container {
+    position: relative;
+    width: 768px;
+    height: 804px;
+}
+
+.container img {
+    width: 100%;
+    height: auto;
+}
+
+.form-group {
+    position: absolute;
+}
+
+.form-group input {
+    border: none;
+    background: transparent;
+    font-size: 18px;
+    color: white;
+    text-align: center;
+}
+
+/* Positioning form fields */
+#name {
+    top: 240px;
+    left: 120px;
+    width: 200px;
+}
+
+#date_of_birth {
+    top: 300px;
+    left: 120px;
+    width: 200px;
+}
+
+#race {
+    top: 360px;
+    left: 120px;
+    width: 200px;
+}
+
+#planet {
+    top: 420px;
+    left: 120px;
+    width: 200px;
+}
+
+#sex {
+    top: 480px;
+    left: 120px;
+    width: 200px;
+}
+
+#position {
+    top: 540px;
+    left: 120px;
+    width: 200px;
+}
+
+#photo {
+    top: 100px;
+    left: 550px;
+    width: 100px;
+    height: 100px;
+}
+
+.submit-button {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.redirect-button {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #0088cc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.tonkeeper-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #0088cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#tonconnect-buttons > button {
+    display: block;
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-family: inherit;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+        height: auto;
+    }
+
+    .container img {
+        width: 100%;
+        height: auto;
+    }
+
+    .form-group input {
+        font-size: 16px;
+    }
+
+    #name, #date_of_birth, #race, #planet, #sex, #position {
+        left: 10px;
+        width: calc(100% - 20px);
+    }
+
+    #photo {
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 80px;
+    }
+
+    .submit-button, .redirect-button {
+        width: calc(100% - 20px);
+    }
+}
